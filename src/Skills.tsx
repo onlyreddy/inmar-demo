@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import React from 'react';
@@ -16,12 +17,18 @@ export interface SkillsMethods {
   validateSkills: () => boolean;
 }
 
+/**
+ * This component renders the complete skills of the user.
+ */
 const Skills = React.forwardRef(function Skills(
   { data, onChange }: ISkillsProps,
   ref: React.Ref<SkillsMethods>,
 ) {
   const [skillErrors, setSkillsErrors] = React.useState<ISkillsData>({} as ISkillsData);
 
+  /**
+ * Below method checks the validation of the user entered details and bases on the non available date the error messages will updated in the UI.
+ */
   const validateSkills = React.useCallback(() => {
     const errors: ISkillsData = {} as ISkillsData;
     if (!data.skills.trim()) {
@@ -42,6 +49,10 @@ const Skills = React.forwardRef(function Skills(
     validateSkills
   }));
 
+  /**
+ * Updates the user form entered data.
+ * @param e - Change event
+ */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -64,5 +75,5 @@ const Skills = React.forwardRef(function Skills(
   );
 });
 
-export default Skills;
+export default React.memo(Skills);
 

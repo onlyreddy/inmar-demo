@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import MUIDatePicker from './DatePicker';
@@ -9,9 +10,11 @@ import dayjs from 'dayjs';
 
 export interface IWorkExperienceData {
   companyName: string;
-  startDate: string;
-  endDate: string;
+  startDate: string | null;
+  endDate: string | null;
   roles: string;
+  formattedStartDate: string;
+  formattedEndDate: string;
 }
 export interface IWorkExperienceProps {
   data: IWorkExperienceData;
@@ -22,16 +25,25 @@ export interface WorkExperienceMethods {
   validateWorkExperienceInfo: () => boolean;
 }
 
+/**
+ * Below component renders the complete Work experience step.
+ */
 const WorkExperience = React.forwardRef(function WorkExperience(
   { data, onChange }: IWorkExperienceProps,
   ref: React.Ref<WorkExperienceMethods>,
 ) {
-
+  /**
+ * Updates the user form entered data.
+ * @param e - Change event
+ */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     onChange({ workExperience: { ...data, [name]: value } } as IFormData);
   };
 
+  /**
+ * Below method checks the validation of the user entered details and bases on the non available date the error messages will updated in the UI.
+ */
   const [workExperienceErrors, setWorkExperienceErrors] = React.useState<IWorkExperienceData>({} as IWorkExperienceData);
 
   const validateWorkExperienceInfo = React.useCallback(() => {
@@ -62,8 +74,9 @@ const WorkExperience = React.forwardRef(function WorkExperience(
   }));
 
   const handleDateChange = React.useCallback((e: unknown, name: string) => {
-    console.log("", e)
-    onChange({ workExperience: { ...data, [name]: dayjs(e).format('YYYY-MM-DD') } } as unknown as IFormData);
+    const formattedName = name === 'startDate' ? 'formattedStartDate' : 'formattedEndDate';
+
+    onChange({ workExperience: { ...data, [name]: e, [formattedName]: dayjs(e).format('YYYY-MM-DD') } } as unknown as IFormData);
   }, [data, onChange]);
 
   return (
@@ -90,5 +103,5 @@ const WorkExperience = React.forwardRef(function WorkExperience(
   );
 });
 
-export default WorkExperience;
+export default React.memo(WorkExperience);
 

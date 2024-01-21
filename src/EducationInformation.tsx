@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import React from 'react';
@@ -12,7 +13,8 @@ export interface IEducationInformationData {
   institutionName: string;
   typeOfInstitution: string;
   degree: string;
-  date: string;
+  date?: string | null;
+  formattedDate: string;
 }
 export interface EducationInformationMethods {
   validateEducationInfo: () => boolean;
@@ -23,14 +25,21 @@ export interface IEducationInformationProps {
   onChange: (stepData: IFormData) => void;
 }
 
+/**
+ * This component is the 2nd step of the application form. It contains all the details about the user educational information.
+ */
 const EducationInformation = React.forwardRef(function EducationInformation(
   { data, onChange }: IEducationInformationProps,
   ref: React.Ref<EducationInformationMethods>,
 ) {
   const [educationInfoErrors, setEducationInfoErrors] = React.useState<IEducationInformationData>({} as IEducationInformationData);
 
-  const validateEducationInfo = React.useCallback(() => {
+  /**
+   * Below method checks the validation of the user entered details and bases on the non available date the error messages will updated in the UI.
+   */
+  const validateEducationInfo = React.useCallback((): boolean => {
     const errors: IEducationInformationData = {} as IEducationInformationData;
+
     if (!data.institutionName.trim()) {
       errors.institutionName = 'Institution name is required';
     }
@@ -56,20 +65,32 @@ const EducationInformation = React.forwardRef(function EducationInformation(
     validateEducationInfo
   }));
 
+  /**
+   * Updates the user form entered data.
+   * @param e - Change event
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     onChange({ education: { ...data, [name]: value } } as IFormData);
   };
 
+  /**
+   * Updates the selection of the degree from the selection.
+   * @param e - Selection Event
+   */
   const handleDegreeChange = React.useCallback((e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
 
     onChange({ education: { ...data, [name]: value } } as IFormData);
   }, [data, onChange]);
 
+  /**
+   * Below method updates the date and it's format to show in the UI.
+   * @param e - Date selection event
+   */
   const handleDateChange = React.useCallback((e: unknown) => {
-    onChange({ education: { ...data, date: dayjs(e).format('YYYY-MM-DD') } } as IFormData);
+    onChange({ education: { ...data, date: e, formattedDate: dayjs(e).format('YYYY-MM-DD') } } as IFormData);
   }, [data, onChange]);
 
   return (
@@ -112,4 +133,4 @@ const EducationInformation = React.forwardRef(function EducationInformation(
   );
 });
 
-export default EducationInformation;
+export default React.memo(EducationInformation);

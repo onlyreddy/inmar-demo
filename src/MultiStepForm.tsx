@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Button, Step, StepButton, Stepper, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
@@ -9,7 +10,10 @@ import WorkExperience, { WorkExperienceMethods } from './WorkExperience';
 import { IFormData } from './types/IFormData';
 import Preview from './Preview';
 
-const steps = ['Personal Information', 'Education', 'Work Experience', 'Skills', 'Preview'];
+/**
+ * Default steps for the application form.
+ */
+const steps: string[] = ['Personal Information', 'Education', 'Work Experience', 'Skills', 'Preview'];
 
 const useStyles = tss
     .create(({ theme }) => ({
@@ -45,6 +49,9 @@ const useStyles = tss
         }
     }));
 
+/**
+ * This component renders the complete steps of the form. It contains total 5 steps. It renders it's children also.
+ */
 const MultiStepForm: React.FC = () => {
     const { classes } = useStyles({});
     const [formData, setFormData] = React.useState<IFormData>({
@@ -57,15 +64,18 @@ const MultiStepForm: React.FC = () => {
         },
         workExperience: {
             companyName: '',
-            startDate: '',
-            endDate: '',
-            roles: ''
+            startDate: null,
+            endDate: null,
+            roles: '',
+            formattedEndDate: '',
+            formattedStartDate: ''
         },
         education: {
             institutionName: '',
             typeOfInstitution: '',
             degree: '',
-            date: ''
+            date: null,
+            formattedDate: ''
         },
         skills: {
             skills: '',
@@ -73,21 +83,29 @@ const MultiStepForm: React.FC = () => {
         },
     });
 
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = React.useState<number>(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
     const personalInfoRef = React.useRef<PersonalInformationMethods>(null);
     const educationInfoRef = React.useRef<EducationInformationMethods>(null);
     const workExperienceRef = React.useRef<WorkExperienceMethods>(null);
     const skillsRef = React.useRef<SkillsMethods>(null);
 
-    const isStepOptional = React.useCallback((step: number) => {
-        return step === 1;
-    }, []);
+    /**
+     * It checks the optional steps.
+     * @param step - step number
+     */
+    const isStepOptional = React.useCallback((step: number) => step === 1, []);
 
-    const isStepSkipped = React.useCallback((step: number) => {
-        return skipped.has(step);
-    }, [skipped]);
+    /**
+     * It checks the skipable steps.
+     * @param step - step number
+     */
+    const isStepSkipped = React.useCallback((step: number) =>
+        skipped.has(step), [skipped]);
 
+    /**
+     * Handles the user next steps after checking the verifications for the individual steps
+     */
     const handleNext = React.useCallback(() => {
         let newSkipped = skipped;
 
@@ -105,10 +123,16 @@ const MultiStepForm: React.FC = () => {
         }
     }, [activeStep, isStepSkipped, skipped]);
 
+    /**
+     * Updates the previous step as active after user back action.
+     */
     const handleBack = React.useCallback(() => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }, []);
 
+    /**
+     * Updates the skipped step.
+     */
     const handleSkip = React.useCallback(() => {
         if (!isStepOptional(activeStep)) {
             throw new Error("You can't skip a step that isn't optional.");
@@ -122,10 +146,17 @@ const MultiStepForm: React.FC = () => {
         });
     }, [activeStep, isStepOptional]);
 
+    /**
+     * Reset the steps to zero.
+     */
     const handleReset = React.useCallback(() => {
         setActiveStep(0);
     }, []);
 
+    /**
+     * Updates the form data.
+     * @param stepData - Individual step data 
+     */
     const handleFormDataChange = React.useCallback((stepData: IFormData) => {
         setFormData((prevData) => ({
             ...prevData,
@@ -133,10 +164,21 @@ const MultiStepForm: React.FC = () => {
         }));
     }, []);
 
+    /**
+     * Handles the step actions
+     */
     const handleStep = React.useCallback((step: number) => () => {
         setActiveStep(step);
     }, []);
-    console.log(activeStep)
+
+    /**
+     * Handles the new application.
+     */
+    const handleNewApplication = React.useCallback(() => {
+        setActiveStep(0);
+        setFormData({} as IFormData)
+    }, []);
+
     return (
         <Box className={classes.root}>
             {(activeStep !== 5) && (
@@ -215,6 +257,7 @@ const MultiStepForm: React.FC = () => {
                     <div className={classes.finish}>
                         <Typography variant='h4'>Thanks for the  application submission.</Typography>
                         <Typography variant="body2" color="GrayText" sx={{ m: 2 }}>Our team will get back to you shortly.</Typography>
+                        <Button onClick={handleNewApplication}>New Application</Button>
                     </div>
                 )}
             </>

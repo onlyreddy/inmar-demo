@@ -1,7 +1,6 @@
-// src/ThemeProviderWrapper.js
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
-import { ThemeProvider } from '@mui/material/styles';
+import { Theme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { tss } from 'tss-react/mui';
 import { darkTheme, lightTheme } from './themes';
@@ -32,25 +31,34 @@ const useStyles = tss
         },
     }));
 
+/**
+ * This component handles the complete theme switching of the user. 
+ */
 const ThemeProviderWrapper = ({ children }: IThemeProviderWrapperProps) => {
     const { classes } = useStyles();
 
-    const [selectedTheme, setSelectedTheme] = useState(lightTheme);
+    const [selectedTheme, setSelectedTheme] = useState<Theme>(lightTheme);
 
+    /**
+     * toggles the theme based on user theme switching.
+     */
     const toggleTheme = React.useCallback(() => {
-        const theme = selectedTheme === lightTheme ? darkTheme : lightTheme;
+        const theme: Theme = selectedTheme === lightTheme ? darkTheme : lightTheme;
 
         localStorage.setItem('theme', theme === lightTheme ? 'lightTheme' : 'darkTheme');
 
         setSelectedTheme(theme);
     }, [selectedTheme]);
 
+    /**
+     * Returns the theme icon based on the theme.
+     */
     const themeIcon = React.useMemo(() =>
         selectedTheme === lightTheme ? <DarkModeIcon /> : <LightModeIcon />
         , [selectedTheme]);
 
     React.useEffect(() => {
-        const theme = localStorage.getItem('theme');
+        const theme: string | null = localStorage.getItem('theme');
 
         setSelectedTheme(theme === 'lightTheme' ? lightTheme : darkTheme);
     }, []);

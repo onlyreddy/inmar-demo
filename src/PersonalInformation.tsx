@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import React from 'react';
@@ -22,6 +23,9 @@ export interface PersonalInformationMethods {
     validatePersonalInfo: () => boolean;
 }
 
+/**
+ * This component renders the User personal information step in the form.
+ */
 const PersonalInformation = React.forwardRef(function PersonalInformation(
     { data, onChange }: PersonalInformationProps,
     ref: React.Ref<PersonalInformationMethods>,
@@ -29,6 +33,9 @@ const PersonalInformation = React.forwardRef(function PersonalInformation(
     const [personalInfoErrors, setPersonalInfoErrors] = React.useState<IPersonalInformationData>({} as IPersonalInformationData);
     const [showLanguageError, setShowLanguageError] = React.useState(false);
 
+    /**
+     * Below method checks the validation of the user entered details and bases on the non available date the error messages will updated in the UI.
+     */
     const validatePersonalInfo = React.useCallback(() => {
         const errors: IPersonalInformationData = {} as IPersonalInformationData;
         if (!data.firstName.trim()) {
@@ -39,7 +46,7 @@ const PersonalInformation = React.forwardRef(function PersonalInformation(
             errors.lastName = 'Last name is required';
         }
 
-        if (!data.email.trim()) {
+        if (!data.email.trim() || !(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))) {
             errors.email = 'Email is required';
         }
 
@@ -61,16 +68,29 @@ const PersonalInformation = React.forwardRef(function PersonalInformation(
         validatePersonalInfo
     }));
 
+    /**
+     * Updates the user form entered data.
+     * @param e - Change event
+     */
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         onChange({ personalInformation: { ...data, [name]: value } } as IFormData);
     };
 
+    /**
+ * Updates the phone input entered data.
+ * @param e - Change event
+ */
     const handlePhoneValueChange = React.useCallback((e: string) => {
         onChange({ personalInformation: { ...data, phoneNumber: e } } as IFormData);
     }, [data, onChange]);
 
+    /**
+ * Updates the language  entered data.
+ * @param e - Change event
+ * @param value - Changed value
+ */
     const handleLanguageChange = React.useCallback((e: unknown,
         value: Array<string>) => {
 
@@ -122,5 +142,4 @@ const PersonalInformation = React.forwardRef(function PersonalInformation(
     );
 });
 
-// eslint-disable-next-line react-refresh/only-export-components
 export default React.memo(PersonalInformation);

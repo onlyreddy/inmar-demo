@@ -22,6 +22,9 @@ export interface PhoneInputProps extends BaseTextFieldProps {
     onChange: (phone: string) => void;
 }
 
+/**
+ * This component renders the PhoneInput with MUI styles. 
+ */
 export const PhoneInput: React.FC<PhoneInputProps> = ({
     value,
     onChange,

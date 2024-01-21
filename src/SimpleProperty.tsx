@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React from 'react';
 import { tss } from "tss-react/mui";
 import type { CSSObject } from 'tss-react';
@@ -27,6 +28,9 @@ const useStyles = tss
     value: {},
 }));
 
+/**
+ * This component renders the form user entered data.
+ */
 const SimpleProperty = React.forwardRef(function SimpleProperty(
     props: SimplePropertyProps,
     ref: React.Ref<HTMLDivElement>,
