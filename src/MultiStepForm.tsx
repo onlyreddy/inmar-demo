@@ -45,43 +45,50 @@ const useStyles = tss
             margin: 'auto',
             display: 'flex',
             flexDirection: 'column',
-            textAlign: 'center'
+            textAlign: 'center',
+            'button': {
+                width: 'fit-content',
+                margin: 'auto',
+                marginTop: 16
+            }
         }
     }));
 
+const defaultData: IFormData =
+{
+    personalInformation: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        languageKnown: [],
+    },
+    workExperience: {
+        companyName: '',
+        startDate: null,
+        endDate: null,
+        roles: '',
+        formattedEndDate: '',
+        formattedStartDate: ''
+    },
+    education: {
+        institutionName: '',
+        typeOfInstitution: '',
+        degree: '',
+        date: null,
+        formattedDate: ''
+    },
+    skills: {
+        skills: '',
+        skillLevel: ''
+    }
+}
 /**
  * This component renders the complete steps of the form. It contains total 5 steps. It renders it's children also.
  */
 const MultiStepForm: React.FC = () => {
     const { classes } = useStyles({});
-    const [formData, setFormData] = React.useState<IFormData>({
-        personalInformation: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phoneNumber: '',
-            languageKnown: [],
-        },
-        workExperience: {
-            companyName: '',
-            startDate: null,
-            endDate: null,
-            roles: '',
-            formattedEndDate: '',
-            formattedStartDate: ''
-        },
-        education: {
-            institutionName: '',
-            typeOfInstitution: '',
-            degree: '',
-            date: null,
-            formattedDate: ''
-        },
-        skills: {
-            skills: '',
-            skillLevel: ''
-        },
-    });
+    const [formData, setFormData] = React.useState<IFormData>(defaultData);
 
     const [activeStep, setActiveStep] = React.useState<number>(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -176,7 +183,7 @@ const MultiStepForm: React.FC = () => {
      */
     const handleNewApplication = React.useCallback(() => {
         setActiveStep(0);
-        setFormData({} as IFormData)
+        setFormData(defaultData)
     }, []);
 
     return (
@@ -230,14 +237,13 @@ const MultiStepForm: React.FC = () => {
                         {activeStep === 3 && <Skills data={formData.skills} onChange={handleFormDataChange} ref={skillsRef} />}
                         {activeStep === 4 && <Preview data={formData as unknown as Array<IFormData>} />}
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                            <Button
+                            {(activeStep !== 0) && (<Button
                                 color="inherit"
-                                disabled={activeStep === 0}
                                 onClick={handleBack}
                                 sx={{ mr: 1 }}
                             >
                                 Back
-                            </Button>
+                            </Button>)}
                             <Box sx={{ flex: '1 1 auto' }} />
                             {isStepOptional(activeStep) && (
                                 <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }} variant='outlined'>
@@ -257,7 +263,7 @@ const MultiStepForm: React.FC = () => {
                     <div className={classes.finish}>
                         <Typography variant='h4'>Thanks for the  application submission.</Typography>
                         <Typography variant="body2" color="GrayText" sx={{ m: 2 }}>Our team will get back to you shortly.</Typography>
-                        <Button onClick={handleNewApplication}>New Application</Button>
+                        <Button variant='contained' onClick={handleNewApplication}>New Application</Button>
                     </div>
                 )}
             </>

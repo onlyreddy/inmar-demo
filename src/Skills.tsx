@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Stack } from '@mui/material';
+import { Button, FormHelperText, MenuItem, Select, SelectChangeEvent, Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import { IFormData } from './types/IFormData';
@@ -59,6 +59,16 @@ const Skills = React.forwardRef(function Skills(
     onChange({ skills: { ...data, [name]: value } } as IFormData);
   };
 
+  /**
+ * Updates the selection of the degree from the selection.
+ * @param e - Selection Event
+ */
+  const handleSkillChange = React.useCallback((e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+
+    onChange({ skills: { ...data, [name]: value } } as IFormData);
+  }, [data, onChange]);
+
   return (
     <Stack spacing={3} sx={{ width: 500, minHeight: 400 }}>
       <TextField label="Skills" variant="standard" onChange={handleChange} value={data.skills} name='skills' sx={{
@@ -66,11 +76,25 @@ const Skills = React.forwardRef(function Skills(
       }}
         error={Boolean(skillErrors.skills)}
         helperText={skillErrors.skills} />
-      <TextField label="Skill Level" variant="standard" name='skillLevel' onChange={handleChange} value={data.skillLevel} sx={{
-        margin: 1
-      }}
+      <Select
+        name='skillLevel'
+        onChange={handleSkillChange}
+        value={data.skillLevel}
+        displayEmpty
+        variant='standard'
         error={Boolean(skillErrors.skillLevel)}
-        helperText={skillErrors.skillLevel} />
+        label="Skill Level"
+      >
+        <MenuItem value="">
+          <em>Skill Level</em>
+        </MenuItem>
+        <MenuItem value={'Initial'}>Initial</MenuItem>
+        <MenuItem value={'Medium'}>Medium</MenuItem>
+        <MenuItem value={'Professional'}>Professional</MenuItem>
+        <MenuItem value={'Expert'}>Expert</MenuItem>
+      </Select>
+      {Boolean(skillErrors.skillLevel) && <FormHelperText sx={{ color: '#d32f2f' }}>{skillErrors.skillLevel}</FormHelperText>}
+      <Button sx={{ width: 'fit-content' }} variant='contained'>Add More</Button>
     </Stack>
   );
 });

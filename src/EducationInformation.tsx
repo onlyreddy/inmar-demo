@@ -9,6 +9,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import { isEmpty } from 'lodash';
 import dayjs from 'dayjs';
+import Button from '@mui/material/Button';
+
 export interface IEducationInformationData {
   institutionName: string;
   typeOfInstitution: string;
@@ -129,6 +131,7 @@ const EducationInformation = React.forwardRef(function EducationInformation(
       }}
       />
       {Boolean(educationInfoErrors.date) && <FormHelperText sx={{ color: '#d32f2f' }}>{educationInfoErrors.date}</FormHelperText>}
+      <Button sx={{ width: 'fit-content' }} variant='contained'>Add More</Button>
     </Stack>
   );
 });
