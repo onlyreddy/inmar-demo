@@ -3,7 +3,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import { Theme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from 'react';
 import { tss } from 'tss-react/mui';
-import { darkTheme, lightTheme } from './themes';
+import { darkTheme, lightTheme } from './themes/themes';
 import IconButton from '@mui/material/IconButton';
 import { GlobalStyles } from "tss-react";
 import AppBar from '@mui/material/AppBar';
